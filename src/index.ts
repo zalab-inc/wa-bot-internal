@@ -12,6 +12,7 @@ import { db } from "./config/database";
 import { systemPrompt } from "./config/prompt";
 import moment from "moment-timezone";
 import { z } from "zod";
+import { checkAndRemindTasks } from "./reminder";
 
 interface ChatData {
 	phone_number: string;
@@ -26,6 +27,7 @@ class WhatsAppService {
 	private client: Client;
 	private readyCallback?: () => Promise<void>;
 	private readonly MAX_HISTORY = 5;
+	private scheduledTasks: Map<string, unknown> = new Map();
 
 	constructor() {
 		this.client = new Client({
@@ -41,6 +43,7 @@ class WhatsAppService {
 		});
 
 		this.setupEventHandlers();
+		this.setupScheduledMessages();
 	}
 
 	private setupEventHandlers() {
@@ -82,8 +85,11 @@ class WhatsAppService {
 		this.client.on("message", async (message: Message) => {
 			if (message.fromMe) return;
 
-			const isCalled = message.body.toLowerCase().includes("wulang");
+			const isCalled = message.body.toLowerCase().includes("wuling");
 			if (!isCalled) return;
+
+			console.log("Group ID:", message.from);
+			console.log("Group Name:", (await message.getChat()).name);
 
 			// Get the actual sender ID from group message
 			const senderId = message.author || message.from;
@@ -270,6 +276,39 @@ class WhatsAppService {
 			console.error("Failed to initialize WhatsApp client:", error);
 			process.exit(1);
 		}
+	}
+
+	private async setupScheduledMessages() {
+		const cron = require("node-cron");
+
+		// Example: Send daily reminder at 9 AM Jakarta time
+		cron.schedule(
+			"0 */2 * * *",
+			async () => {
+				try {
+					const groupId = "120363365218296529@g.us";
+					const chat = await this.client.getChatById(groupId);
+					if (chat) {
+						const reminderMessageOne = await checkAndRemindTasks(
+							"tolong mengingatkan mbak nur untuk melakukan tugas, dalam 1 paragraf",
+						);
+						await chat.sendMessage(reminderMessageOne);
+						await new Promise((resolve) => setTimeout(resolve, 20 * 1000));
+						const reminderMessageTwo = await checkAndRemindTasks(
+							"tolong mengingatkan daffa untuk melakukan tugas, dalam 1 paragraf",
+						);
+						await chat.sendMessage(reminderMessageTwo);
+					}
+				} catch (error) {
+					console.error("Error sending scheduled message:", error);
+				}
+			},
+			{
+				timezone: "Asia/Jakarta",
+			},
+		);
+
+		// You can add more scheduled tasks here
 	}
 }
 
