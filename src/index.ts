@@ -83,11 +83,10 @@ class WhatsAppService {
 			if (message.fromMe) return;
 
 			const isCalled = message.body.toLowerCase().includes("wulang");
+			if (!isCalled) return;
 
 			// Get the actual sender ID from group message
 			const senderId = message.author || message.from;
-
-			// Extract phone number from sender ID
 			const phoneNumber = senderId.split("@")[0].split("-")[0];
 
 			const isAllowedNumber =
@@ -95,9 +94,9 @@ class WhatsAppService {
 				phoneNumber.includes("85712208535") ||
 				phoneNumber.includes("82323363406") ||
 				phoneNumber.includes("81330326382");
+			if (!isAllowedNumber) return;
 
 			if (isCalled && isAllowedNumber) {
-				console.log("Processing message from:", phoneNumber);
 				await this.handleMessage(message);
 			}
 		});
@@ -112,7 +111,6 @@ class WhatsAppService {
 		};
 
 		try {
-			// console.log(`Received message from ${message.from}: ${message.body}`);
 			console.log(`Received message from ${message.from}`);
 
 			// Build conversation context with history
