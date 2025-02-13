@@ -88,8 +88,8 @@ class WhatsAppService {
 			const isCalled = message.body.toLowerCase().includes("wulang");
 			if (!isCalled) return;
 
-			console.log("Group ID:", message.from);
-			console.log("Group Name:", (await message.getChat()).name);
+			// console.log("Group ID:", message.from);
+			// console.log("Group Name:", (await message.getChat()).name);
 
 			// Get the actual sender ID from group message
 			const senderId = message.author || message.from;
