@@ -6,9 +6,12 @@ import {
 	type CoreSystemMessage,
 	type CoreUserMessage,
 	type CoreAssistantMessage,
+	tool,
 } from "ai";
 import { db } from "./config/database";
 import { systemPrompt } from "./config/prompt";
+import moment from "moment-timezone";
+import { z } from "zod";
 
 interface ChatData {
 	phone_number: string;
@@ -79,9 +82,7 @@ class WhatsAppService {
 		this.client.on("message", async (message: Message) => {
 			if (message.fromMe) return;
 
-			const isCalled =
-				message.body.toLowerCase().includes("aik") ||
-				message.body.toLowerCase().includes("wulang");
+			const isCalled = message.body.toLowerCase().includes("wulang");
 
 			// Get the actual sender ID from group message
 			const senderId = message.author || message.from;
@@ -89,15 +90,13 @@ class WhatsAppService {
 			// Extract phone number from sender ID
 			const phoneNumber = senderId.split("@")[0].split("-")[0];
 
-			const allowedNumbers = [
-				"6281235581851",
-				"6285712208535",
-				"6282323363406",
-			];
+			const isAllowedNumber =
+				phoneNumber.includes("81235581851") ||
+				phoneNumber.includes("85712208535") ||
+				phoneNumber.includes("82323363406") ||
+				phoneNumber.includes("81330326382");
 
-			const isCalledFrom = allowedNumbers.includes(phoneNumber);
-
-			if (isCalled) {
+			if (isCalled && isAllowedNumber) {
 				console.log("Processing message from:", phoneNumber);
 				await this.handleMessage(message);
 			}
@@ -126,6 +125,38 @@ class WhatsAppService {
 			const { text: response } = await generateText({
 				model: openai("gpt-4o-mini"),
 				messages,
+				tools: {
+					getCurrentTime: tool({
+						description: "Get the current time",
+						parameters: z.object({}),
+						execute: async () => {
+							return moment().tz("Asia/Jakarta", true).add(7, "hours").toDate();
+						},
+					}),
+					dbQuery: tool({
+						description:
+							"Execute a query to the database based on user request",
+						parameters: z.object({
+							query: z
+								.string()
+								.describe(
+									"The query to execute using knexjs syntax db.raw(query)",
+								),
+						}),
+						execute: async ({ query }) => {
+							try {
+								const result = await db.raw(query);
+								return result || "No result";
+							} catch (error) {
+								return "Error executing database query";
+							}
+						},
+					}),
+				},
+				maxSteps: 5,
+				onStepFinish: (step) => {
+					// console.log(JSON.stringify(step, null, 2));
+				},
 			});
 
 			// Send response
@@ -172,11 +203,6 @@ class WhatsAppService {
 				is_sent: chatData.is_sent,
 				error_message: chatData.error_message,
 			});
-
-			// console.log("Chat saved successfully:", {
-			// 	phone: chatData.phone_number,
-			// 	status: chatData.is_sent ? "sent" : "failed",
-			// });
 		} catch (error) {
 			console.error("Error saving chat to database:", error);
 		}
