@@ -293,10 +293,11 @@ class WhatsAppService {
 							"tolong mengingatkan mbak nur untuk melakukan tugas, dalam 1 paragraf",
 						);
 						await chat.sendMessage(reminderMessageOne);
-						await new Promise((resolve) => setTimeout(resolve, 20 * 1000));
+						await new Promise((resolve) => setTimeout(resolve, 120 * 1000));
 						const reminderMessageTwo = await checkAndRemindTasks(
 							"tolong mengingatkan daffa untuk melakukan tugas, dalam 1 paragraf",
 						);
+						await new Promise((resolve) => setTimeout(resolve, 240 * 1000));
 						await chat.sendMessage(reminderMessageTwo);
 					}
 				} catch (error) {
