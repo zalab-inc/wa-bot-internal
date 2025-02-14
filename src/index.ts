@@ -297,8 +297,12 @@ class WhatsAppService {
 						const reminderMessageTwo = await checkAndRemindTasks(
 							"tolong mengingatkan daffa untuk melakukan tugas, dalam 1 paragraf",
 						);
-						await new Promise((resolve) => setTimeout(resolve, 240 * 1000));
 						await chat.sendMessage(reminderMessageTwo);
+						await new Promise((resolve) => setTimeout(resolve, 360 * 1000));
+						const reminderMessageThree = await checkAndRemindTasks(
+							"tolong mengingatkan bu malihah untuk melakukan tugas, dalam 1 paragraf",
+						);
+						await chat.sendMessage(reminderMessageThree);
 					}
 				} catch (error) {
 					console.error("Error sending scheduled message:", error);
