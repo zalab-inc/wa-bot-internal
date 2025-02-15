@@ -286,7 +286,8 @@ class WhatsAppService {
 			"0 * * * *",
 			async () => {
 				try {
-					const groupId = "120363365218296529@g.us";
+					const groupId = "120363321235164609@g.us"; // fiverr
+					// const groupId = "120363365218296529@g.us"; // internal
 					const chat = await this.client.getChatById(groupId);
 					if (chat) {
 						const reminderMessageOne = await checkAndRemindTasks(
