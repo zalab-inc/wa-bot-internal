@@ -88,8 +88,8 @@ class WhatsAppService {
 			const isCalled = message.body.toLowerCase().includes("wulang");
 			if (!isCalled) return;
 
-			console.log("Group ID:", message.from);
-			console.log("Group Name:", (await message.getChat()).name);
+			// console.log("Group ID:", message.from);
+			// console.log("Group Name:", (await message.getChat()).name);
 
 			// Get the actual sender ID from group message
 			const senderId = message.author || message.from;
@@ -284,7 +284,7 @@ class WhatsAppService {
 
 		// Example: Send daily reminder at 9 AM Jakarta time
 		cron.schedule(
-			"0 * * * *",
+			"0 */3 * * *",
 			async () => {
 				try {
 					const groupId = "120363321235164609@g.us"; // fiverr
