@@ -283,7 +283,7 @@ class WhatsAppService {
 
 		// Example: Send daily reminder at 9 AM Jakarta time
 		cron.schedule(
-			"0 */2 * * *",
+			"0 */3 * * *",
 			async () => {
 				try {
 					const groupId = "120363321235164609@g.us"; // fiverr
