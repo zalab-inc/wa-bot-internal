@@ -283,26 +283,26 @@ class WhatsAppService {
 
 		// Example: Send daily reminder at 9 AM Jakarta time
 		cron.schedule(
-			"0 */2 * * *",
+			"0 * * * *",
 			async () => {
 				try {
 					const groupId = "120363365218296529@g.us";
 					const chat = await this.client.getChatById(groupId);
 					if (chat) {
 						const reminderMessageOne = await checkAndRemindTasks(
-							"tolong mengingatkan mbak nur untuk melakukan tugas, dalam 1 paragraf",
+							"tolong mengingatkan bu herlin untuk melakukan tugas, dalam 1 paragraf",
 						);
 						await chat.sendMessage(reminderMessageOne);
-						await new Promise((resolve) => setTimeout(resolve, 120 * 1000));
-						const reminderMessageTwo = await checkAndRemindTasks(
-							"tolong mengingatkan daffa untuk melakukan tugas, dalam 1 paragraf",
-						);
-						await chat.sendMessage(reminderMessageTwo);
-						await new Promise((resolve) => setTimeout(resolve, 360 * 1000));
-						const reminderMessageThree = await checkAndRemindTasks(
-							"tolong mengingatkan bu malihah untuk melakukan tugas, dalam 1 paragraf",
-						);
-						await chat.sendMessage(reminderMessageThree);
+						// await new Promise((resolve) => setTimeout(resolve, 120 * 1000));
+						// const reminderMessageTwo = await checkAndRemindTasks(
+						// 	"tolong mengingatkan daffa untuk melakukan tugas, dalam 1 paragraf",
+						// );
+						// await chat.sendMessage(reminderMessageTwo);
+						// await new Promise((resolve) => setTimeout(resolve, 360 * 1000));
+						// const reminderMessageThree = await checkAndRemindTasks(
+						// 	"tolong mengingatkan bu malihah untuk melakukan tugas, dalam 1 paragraf",
+						// );
+						// await chat.sendMessage(reminderMessageThree);
 					}
 				} catch (error) {
 					console.error("Error sending scheduled message:", error);

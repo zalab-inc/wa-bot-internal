@@ -88,6 +88,60 @@ export async function checkAndRemindTasks(userInput: string) {
 					}
 				},
 			}),
+			getHerlinTodo: tool({
+				description: "Get the herlin todolist from the database",
+				parameters: z.object({}),
+				execute: async () => {
+					try {
+						const result = await db
+							.select("*")
+							.from("todolist")
+							.where("person_id", "bu_herlin");
+						if (result.length === 0) {
+							return "Tidak ada hasil dari query ini";
+						}
+						return result;
+					} catch (error) {
+						return "Error executing database query";
+					}
+				},
+			}),
+			getMalihahTodo: tool({
+				description: "Get the malihah todolist from the database",
+				parameters: z.object({}),
+				execute: async () => {
+					try {
+						const result = await db
+							.select("*")
+							.from("todolist")
+							.where("person_id", "bu_malihah");
+						if (result.length === 0) {
+							return "Tidak ada hasil dari query ini";
+						}
+						return result;
+					} catch (error) {
+						return "Error executing database query";
+					}
+				},
+			}),
+			getPakAriTodo: tool({
+				description: "Get the pak ari todolist from the database",
+				parameters: z.object({}),
+				execute: async () => {
+					try {
+						const result = await db
+							.select("*")
+							.from("todolist")
+							.where("person_id", "pak_ari");
+						if (result.length === 0) {
+							return "Tidak ada hasil dari query ini";
+						}
+						return result;
+					} catch (error) {
+						return "Error executing database query";
+					}
+				},
+			}),
 		},
 		maxSteps: 5,
 	});
