@@ -99,6 +99,7 @@ class WhatsAppService {
 				phoneNumber.includes("81235581851") ||
 				phoneNumber.includes("85712208535") ||
 				phoneNumber.includes("82323363406") ||
+				phoneNumber.includes("8112543030") ||
 				phoneNumber.includes("81330326382");
 			if (!isAllowedNumber) return;
 
