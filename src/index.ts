@@ -85,7 +85,7 @@ class WhatsAppService {
 		this.client.on("message", async (message: Message) => {
 			if (message.fromMe) return;
 
-			const isCalled = message.body.toLowerCase().includes("wulang");
+			const isCalled = message.body.toLowerCase().includes("wuling");
 			if (!isCalled) return;
 
 			// console.log("Group ID:", message.from);
